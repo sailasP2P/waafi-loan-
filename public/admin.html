@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="container">
+    <h1>Admin Dashboard</h1>
+    <p>Loan application management</p>
+
+    <section id="loginSection">
+      <label for="adminToken">Admin access token</label>
+      <input type="password" id="adminToken"
+             placeholder="Enter admin token" required>
+      <button id="loginButton">Access Dashboard</button>
+    </section>
+
+    <section id="dashboard" hidden>
+      <h2>Applications</h2>
+      <button id="refreshButton">Refresh Applications</button>
+      <div id="applications"></div>
+    </section>
+
+    <p id="message" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const loginSection = document.getElementById("loginSection");
+    const dashboard = document.getElementById("dashboard");
+    const message = document.getElementById("message");
+    const applications = document.getElementById("applications");
+
+    let adminToken = "";
+
+    async function loadApplications() {
+      applications.textContent = "Loading applications...";
+
+      try {
+        const response = await fetch("/api/admin/applications", {
+          headers: {
+            "Authorization": "Bearer " + adminToken
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Could not load applications.");
+        }
+
+        applications.replaceChildren();
+
+        if (!data.applications || data.applications.length === 0) {
+          applications.textContent = "No applications found.";
+          return;
+        }
+
+        data.applications.forEach(app => {
+          const card = document.createElement("article");
+          const heading = document.createElement("h3");
+          const details = document.createElement("p");
+          const status = document.createElement("p");
+          const approve = document.createElement("button");
+          const reject = document.createElement("button");
+
+          heading.textContent = app.fullName || "Applicant";
+          details.textContent =
+            "Reference: " + app.reference +
+            " | Phone: " + app.phone + pin
+            " | Amount: $" + app.amount +
+            " | Months: " + app.months;
+
+          status.textContent = "Status: " + app.status;
+
+          approve.textContent = "Approve";
+          reject.textContent = "Reject";
+
+          approve.addEventListener("click", () =>
+            updateApplication(app.reference, "approved")
+          );
+
+          reject.addEventListener("click", () =>
+            updateApplication(app.reference, "rejected")
+          );
+
+          card.append(heading, details, status, approve, reject);
+          applications.appendChild(card);
+        });
+
+      } catch (error) {
+        applications.textContent = error.message;
+      }
+    }
+
+    async function updateApplication(reference, status) {
+      if (!confirm("Are you sure you want to " + status + " this application?")) {
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "/api/admin/applications/" + encodeURIComponent(reference),
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + adminToken
+            },
+            body: JSON.stringify({ status })
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Update failed.");
+        }
+
+        message.textContent = "Application updated.";
+        await loadApplications();
+
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    }
+
+    document.getElementById("loginButton").addEventListener("click", async () => {
+      adminToken = document.getElementById("adminToken").value.trim();
+
+      if (!adminToken) {
+        message.textContent = "Enter your admin token.";
+        return;
+      }
+
+      loginSection.hidden = true;
+      dashboard.hidden = false;
+      await loadApplications();
+    });
+
+    document.getElementById("refreshButton").addEventListener("click", loadApplications);
+  </script>
+
+</body>
+</html>

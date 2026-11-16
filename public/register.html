@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Waafi Loan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="top">
+    <a href="index.html" class="brand">Waafi</a>
+</header>
+
+<main class="page">
+
+    <section class="panel">
+
+        <h1>Create Application</h1>
+
+        <p class="muted">
+            Enter your contact details to begin your application.
+        </p>
+
+        <form id="registerForm">
+
+            <label>
+                Full Legal Name
+                <input
+                    type="text"
+                    name="fullName"
+                    required
+                    minlength="3"
+                    maxlength="100"
+                    placeholder="Enter your full name">
+            </label>
+
+            <label>
+                Mobile Number
+                <input
+                    type="tel"
+                    name="phone"
+                    required
+                    maxlength="20"
+                    placeholder="+252...">
+            </label>
+
+            <label>
+                Email (Optional)
+                <input
+                    type="email"
+                    name="email"
+                    maxlength="150"
+                    placeholder="Enter your email">
+            </label>
+
+            <label class="check">
+                <input
+                    type="checkbox"
+                    name="consent"
+                    required>
+                I agree to the privacy notice and understand
+                this is a test application, not an offer of credit.
+            </label>
+
+            <button type="submit" class="button">
+                CONTINUE
+            </button>
+
+        </form>
+
+        <p id="msg" class="notice"></p>
+
+    </section>
+
+</main>
+
+<script src="script.js"></script>
+
+</body>
+</html>

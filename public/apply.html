@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Loan Application</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="container">
+    <h1>Submit Your Application</h1>
+    <p>Please review your details before submitting.</p>
+
+    <form id="applicationForm">
+      <label for="fullName">Full name</label>
+      <input id="fullName" name="fullName" type="text"
+             placeholder="Enter your full name" required>
+
+      <label for="phone">Phone number</label>
+      <input id="phone" name="phone" type="tel"
+             placeholder="Enter your phone number" required>
+
+      <label for="amount">Requested loan amount (USD)</label>
+      <input id="amount" name="amount" type="number"
+             min="100" max="5000" required>
+
+      <label for="months">Repayment period (months)</label>
+      <input id="months" name="months" type="number"
+             min="6" max="60" required>
+
+      <label>
+        <input type="checkbox" id="consent" required>
+        I confirm that the information I provided is accurate.
+      </label>
+
+      <button type="submit" id="submitButton">
+        Submit Application
+      </button>
+    </form>
+
+    <p id="message"></p>
+    <a href="details.html">Go back</a>
+  </main>
+
+  <script>
+    const form = document.getElementById("applicationForm");
+    const message = document.getElementById("message");
+    const button = document.getElementById("submitButton");
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      button.disabled = true;
+      button.textContent = "Submitting...";
+
+      const application = {
+        fullName: document.getElementById("fullName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        amount: Number(document.getElementById("amount").value),
+        months: Number(document.getElementById("months").value)
+      };
+
+      try {
+        const response = await fetch("/api/applications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(application)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Submission failed.");
+        }
+
+        message.textContent =
+          "Application submitted. Your reference is: " +
+          (result.reference || "Pending");
+        form.reset();
+
+      } catch (error) {
+        message.textContent =
+          error.message || "Unable to submit. Please try again.";
+      } finally {
+        button.disabled = false;
+        button.textContent = "Submit Application";
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Application Status</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="container">
+    <h1>Check Your Application Status</h1>
+    <p>Enter your application reference number below.</p>
+
+    <form id="statusForm">
+      <label for="reference">Application reference</label>
+      <input
+        type="text"
+        id="reference"
+        placeholder="Enter your reference number"
+        required
+      >
+
+      <button type="submit" id="checkButton">
+        Check Status
+      </button>
+    </form>
+
+    <div id="result" aria-live="polite"></div>
+
+    <p><a href="index.html">Return to Home</a></p>
+  </main>
+
+  <script>
+    const form = document.getElementById("statusForm");
+    const result = document.getElementById("result");
+    const button = document.getElementById("checkButton");
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const reference =
+        document.getElementById("reference").value.trim();
+
+      if (!reference) return;
+
+      button.disabled = true;
+      button.textContent = "Checking...";
+      result.textContent = "";
+
+      try {
+        const response = await fetch(
+          "/api/applications/" + encodeURIComponent(reference)
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Application not found.");
+        }
+
+        result.textContent =
+          "Application status: " + data.status;
+
+      } catch (error) {
+        result.textContent =
+          error.message || "Unable to check status.";
+      } finally {
+        button.disabled = false;
+        button.textContent = "Check Status";
+      }
+    });
+  </script>
+
+</body>
+</html>

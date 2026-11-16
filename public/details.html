@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details | Waafi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="top">
+    <a href="index.html" class="brand">Waafi</a>
+</header>
+
+<main class="page">
+
+    <section class="panel">
+
+        <h1>Additional Information</h1>
+
+        <p class="muted">
+            Please provide the information required
+            for your test application.
+        </p>
+
+        <form id="detailsForm">
+
+            <label>
+                Country / Region
+
+                <input
+                    type="text"
+                    name="region"
+                    placeholder="Enter your region"
+                    maxlength="100"
+                    required>
+            </label>
+
+            <label>
+                Employment or Income Source
+
+                <input
+                    type="text"
+                    name="incomeSource"
+                    placeholder="Enter your income source"
+                    maxlength="120"
+                    required>
+            </label>
+
+            <label>
+                Monthly Income (USD)
+
+                <input
+                    type="number"
+                    name="monthlyIncome"
+                    min="0"
+                    max="1000000"
+                    placeholder="Enter monthly income"
+                    required>
+            </label>
+
+            <label>
+                Purpose of Application
+
+                <textarea
+                    name="purpose"
+                    placeholder="Explain why you need the loan"
+                    maxlength="500"
+                    required></textarea>
+            </label>
+
+            <button
+                type="submit"
+                class="button">
+                REVIEW APPLICATION
+            </button>
+
+        </form>
+
+        <p class="notice">
+            Your information will be used for
+            processing this application.
+            customer enters wallet PINs, passwords
+            or OTP codes.
+        </p>
+
+    </section>
+
+</main>
+
+<script src="script.js"></script>
+
+</body>
+</html>
